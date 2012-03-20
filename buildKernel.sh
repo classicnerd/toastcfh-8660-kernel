@@ -16,10 +16,15 @@ DROIDGITHUB=TwistedUmbrella/Twisted-Playground.git
 SHOOTREPO=/Volumes/android/github-aosp_source/android_device_htc_shooter
 SHOOTGITHUB=TwistedPlayground/android_device_htc_shooter.git
 
-make clean -j$CPU_JOB_NUM
-
 CPU_JOB_NUM=16
 TOOLCHAIN_PREFIX=$TOOLCHAINDIR/arm-eabi-
+
+echo "Config Name? "
+ls config
+read configfile
+cp -R config/$configfile .config
+
+make clean -j$CPU_JOB_NUM
 
 make -j$CPU_JOB_NUM ARCH=arm CROSS_COMPILE=$TOOLCHAIN_PREFIX
 
