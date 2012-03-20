@@ -845,7 +845,7 @@ static long mtp_ioctl(struct file *fp, unsigned code, unsigned long value)
 	struct file *filp = NULL;
 	int ret = -EINVAL;
 
-	if (mtp_lock(&dev->ioctl_excl))
+	if (_lock(&dev->ioctl_excl))
 		return -EBUSY;
 
 	switch (code) {
@@ -937,7 +937,7 @@ fail:
 		dev->state = STATE_READY;
 	spin_unlock_irq(&dev->lock);
 out:
-	mtp_unlock(&dev->ioctl_excl);
+	_unlock(&dev->ioctl_excl);
 	DBG(dev->cdev, "ioctl returning %d\n", ret);
 	return ret;
 }
