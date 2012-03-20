@@ -93,7 +93,7 @@
 #include <mach/htc_headset_8x60.h>
 #include <linux/i2c/isl9519.h>
 #include <mach/tpa2051d3.h>
-#ifdef CONFIG_USB_G_ANDROID
+#ifdef CONFIG_USB_ANDROID
 #include <linux/usb/android_composite.h>
 #endif
 #include <mach/usb_gadget_fserial.h>
@@ -826,7 +826,7 @@ static struct platform_device cable_detect_device = {
 	},
 };
 
-#ifdef CONFIG_USB_G_ANDROID
+#ifdef CONFIG_USB_ANDROID
 static struct usb_mass_storage_platform_data mass_storage_pdata = {
 	.nluns		= 1,
 	.vendor		= "HTC",
@@ -841,7 +841,7 @@ static struct platform_device usb_mass_storage_device = {
 	},
 };
 
-#ifdef CONFIG_USB_G_ANDROID_RNDIS
+#ifdef CONFIG_USB_ANDROID_RNDIS
 static struct usb_ether_platform_data rndis_pdata = {
 	/* ethaddr is filled by board_serialno_setup */
 	.vendorID  = 0x18d1,
@@ -3592,7 +3592,7 @@ static struct platform_device *surf_devices[] __initdata = {
 #ifdef CONFIG_MSM_DSPS
 	&msm_dsps_device,
 #endif
-#ifdef CONFIG_USB_G_ANDROID_QCT_DIAG
+#ifdef CONFIG_USB_ANDROID_QCT_DIAG
        &usb_diag_device,
 #endif
 #ifdef CONFIG_BATTERY_MSM
@@ -6596,7 +6596,7 @@ void msm_snddev_rx_route_deconfig(void)
 {
 	pr_debug("%s\n", __func__);
 }
-#ifdef CONFIG_USB_G_ANDROID
+#ifdef CONFIG_USB_ANDROID
 static void vigor_add_usb_devices(void)
 {
 	struct usb_mass_storage_platform_data *p;
@@ -6623,7 +6623,7 @@ static void vigor_add_usb_devices(void)
 	msm_device_hsusb.dev.platform_data = &msm_hsusb_pdata;
 	platform_device_register(&msm_device_hsusb);
 
-#ifdef CONFIG_USB_G_ANDROID_RNDIS
+#ifdef CONFIG_USB_ANDROID_RNDIS
 	platform_device_register(&rndis_device);
 #endif
 
@@ -6788,7 +6788,7 @@ static void __init vigor_init(void)
 	else
 		i2c_register_board_info(MSM_GSBI7_QUP_I2C_BUS_ID, vigor_flashlight_XB, ARRAY_SIZE(vigor_flashlight_XB));
 #endif
-#ifdef CONFIG_USB_G_ANDROID
+#ifdef CONFIG_USB_ANDROID
 	/*usb driver won't be loaded in MFG 58 station*/
 	if (board_mfg_mode() != 6)
 		vigor_add_usb_devices();
