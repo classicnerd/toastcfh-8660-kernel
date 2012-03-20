@@ -97,7 +97,7 @@ static void modem_fatal_fn(struct work_struct *work)
 		printk(KERN_CRIT "Modem Panic - subsys-restart: Rebooting SoC..\n");
 		printk(KERN_CRIT "subsys-restart: Rebooting SoC..\n");
 
-		soc_restart(RESTART_MODE_MODEM_USER_INVOKED, "modem-user-invoked-reset");
+		//soc_restart(RESTART_MODE_MODEM_USER_INVOKED, "modem-user-invoked-reset");
 
 	} else {
 

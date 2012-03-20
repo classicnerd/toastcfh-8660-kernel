@@ -11,6 +11,7 @@ PROPER=`echo $2 | sed 's/\([a-z]\)\([a-zA-Z0-9]*\)/\u\1\2/g'`
 HANDLE=TwistedZero
 KERNELSPEC=/Volumes/android/toastcfh-8660-kernel
 ANDROIDREPO=/Volumes/android/Twisted-Playground
+TOOLCHAINDIR=/Volumes/android/android-tzb_ics4.0.1/prebuilt/darwin-x86/toolchain/arm-eabi-4.4.0/bin
 DROIDGITHUB=TwistedUmbrella/Twisted-Playground.git
 SHOOTREPO=/Volumes/android/github-aosp_source/android_device_htc_shooter
 SHOOTGITHUB=TwistedPlayground/android_device_htc_shooter.git
@@ -18,7 +19,7 @@ SHOOTGITHUB=TwistedPlayground/android_device_htc_shooter.git
 make clean -j$CPU_JOB_NUM
 
 CPU_JOB_NUM=16
-TOOLCHAIN_PREFIX=arm-none-eabi-
+TOOLCHAIN_PREFIX=$TOOLCHAINDIR/arm-eabi-
 
 make -j$CPU_JOB_NUM ARCH=arm CROSS_COMPILE=$TOOLCHAIN_PREFIX
 
@@ -28,22 +29,12 @@ if [ "$2" == "shooter" ]; then
 
 echo "adding to build"
 
-if [ ! -e $SHOOTREPO/kernel ]; then
-mkdir $SHOOTREPO/kernel
-fi
-if [ ! -e $SHOOTREPO/kernel/lib ]; then
-mkdir $SHOOTREPO/kernel/lib
-fi
-if [ ! -e $SHOOTREPO/kernel/lib/modules ]; then
-mkdir $SHOOTREPO/kernel/lib/modules
-fi
-
-cp -R arch/arm/boot/zImage $SHOOTREPO/kernel/kernel
+cp -R arch/arm/boot/zImage $SHOOTREPO/prebuilt/root/kernel
 for j in $(find . -name "*.ko"); do
-cp "${j}" $SHOOTREPO/kernel/lib/modules
+cp "${j}" $SHOOTREPO/prebuilt/system/lib/modules
 done
 
-if [ -e $SHOOTREPO/kernel/kernel ]; then
+if [ -e $SHOOTREPO/prebuilt/root/kernel ]; then
 cd $SHOOTREPO
 git commit -a -m "Automated Kernel Update - ${PROPER}"
 git push git@github.com:$SHOOTGITHUB HEAD:ics
