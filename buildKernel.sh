@@ -14,7 +14,7 @@ ANDROIDREPO=/Volumes/android/Twisted-Playground
 TOOLCHAINDIR=/Volumes/android/android-tzb_ics4.0.1/prebuilt/darwin-x86/toolchain/arm-eabi-4.4.0/bin
 DROIDGITHUB=TwistedUmbrella/Twisted-Playground.git
 SHOOTREPO=/Volumes/android/github-aosp_source/android_device_htc_shooter
-SHOOTGITHUB=TwistedPlayground/android_device_htc_shooter.git
+SHOOTGITHUB=ThePlayground/android_device_htc_shooter.git
 
 CPU_JOB_NUM=16
 TOOLCHAIN_PREFIX=$TOOLCHAINDIR/arm-eabi-
@@ -42,7 +42,7 @@ done
 if [ -e $SHOOTREPO/prebuilt/root/kernel ]; then
 cd $SHOOTREPO
 git commit -a -m "Automated Kernel Update - ${PROPER}"
-git push git@github.com:$SHOOTGITHUB HEAD:ics
+git push git@github.com:$SHOOTGITHUB HEAD:ics -f
 fi
 
 else
@@ -71,7 +71,7 @@ rm -fr tmpdir
 cd $ANDROIDREPO
 git checkout gh-pages
 git commit -a -m "Automated Shooter Kernel Build - Patch"
-git push git@github.com:$DROIDGITHUB HEAD:ics
+git push git@github.com:$DROIDGITHUB HEAD:ics -f
 
 fi
 
