@@ -538,3 +538,4 @@ MODULE_DESCRIPTION("Kineto GAN Virtual Ethernet Device");
 MODULE_ALIAS("gannet");
 MODULE_VERSION("1.0");
 MODULE_LICENSE("GPL");
+
