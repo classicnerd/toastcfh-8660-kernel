@@ -2,8 +2,6 @@
 
 # Copyright (C) 2011 Twisted Playground
 
-# This script is designed to compliment .bash_profile code to automate the build process by adding a typical shell command such as:
-# function buildKernel { echo "Ace, Mecha, Sholes, Release?"; read device; cd /Volumes/android/android-tzb_ics4.0.1/kernel;  ./buildChosenKernel.sh $device; }
 # This script is designed by Twisted Playground for use on MacOSX 10.7 but can be modified for other distributions of Mac and Linux
 
 PROPER=`echo $2 | sed 's/\([a-z]\)\([a-zA-Z0-9]*\)/\u\1\2/g'`
@@ -15,6 +13,7 @@ TOOLCHAINDIR=/Volumes/android/android-tzb_ics4.0.1/prebuilt/darwin-x86/toolchain
 DROIDGITHUB=TwistedUmbrella/Twisted-Playground.git
 SHOOTREPO=/Volumes/android/github-aosp_source/android_device_htc_shooter
 SHOOTGITHUB=ThePlayground/android_device_htc_shooter.git
+zipfile=$HANDLE"_toastcfh-hijack_ICS.zip"
 
 CPU_JOB_NUM=16
 TOOLCHAIN_PREFIX=$TOOLCHAINDIR/arm-eabi-
@@ -39,7 +38,7 @@ for j in $(find . -name "*.ko"); do
 cp "${j}" $SHOOTREPO/prebuilt/system/lib/modules
 done
 
-if [ -e $SHOOTREPO/prebuilt/root/kernel ]; then
+if [ -e arch/arm/boot/zImage ]; then
 cd $SHOOTREPO
 git commit -a -m "Automated Kernel Update - ${PROPER}"
 git push git@github.com:$SHOOTGITHUB HEAD:ics -f
@@ -62,16 +61,18 @@ for j in tmpdir/*.ko; do
     cp "${j}" tmpdir/anykernel/system/lib/modules/
 done
 
+if [ -e arch/arm/boot/zImage ]; then
 echo "making zip file"
 cd tmpdir/anykernel
-zip -r "TwistedZero_toastcfh-hijack_ICS.zip" *
-cp -R TwistedZero_toastcfh-hijack_ICS.zip $ANDROIDREPO/Kernel
+zip -r $zipfile *
+cp -R $zipfile $ANDROIDREPO/Kernel/$zipfile
 cd ../../
 rm -fr tmpdir
 cd $ANDROIDREPO
 git checkout gh-pages
-git commit -a -m "Automated Shooter Kernel Build - Patch"
+git commit -a -m "Automated Patch Kernel Build - ${PROPER}"
 git push git@github.com:$DROIDGITHUB HEAD:ics -f
+fi
 
 fi
 
