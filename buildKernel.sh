@@ -13,6 +13,7 @@ TOOLCHAINDIR=/Volumes/android/android-tzb_ics4.0.1/prebuilt/darwin-x86/toolchain
 DROIDGITHUB=TwistedUmbrella/Twisted-Playground.git
 SHOOTREPO=/Volumes/android/github-aosp_source/android_device_htc_shooter
 SHOOTGITHUB=ThePlayground/android_device_htc_shooter.git
+SPDTWKR=/Volumes/android/Twisted-Playground/ScriptFusion
 zipfile=$HANDLE"_toastcfh-hijack_ICS.zip"
 
 CPU_JOB_NUM=16
@@ -23,6 +24,8 @@ ls config
 read configfile
 cp -R config/$configfile .config
 
+cp -R $SPDTWKR/speedtweak.sh $KERNELSPEC/mkboot.aosp/boot.img-ramdisk/sbin
+
 make clean -j$CPU_JOB_NUM
 
 make -j$CPU_JOB_NUM ARCH=arm CROSS_COMPILE=$TOOLCHAIN_PREFIX
@@ -31,14 +34,15 @@ find . -name "*.ko" | xargs ${TOOLCHAIN_PREFIX}strip --strip-unneeded
 
 if [ "$2" == "shooter" ]; then
 
+if [ -e arch/arm/boot/zImage ]; then
+
 echo "adding to build"
 
 cp -R arch/arm/boot/zImage $SHOOTREPO/prebuilt/root/kernel
 for j in $(find . -name "*.ko"); do
-cp "${j}" $SHOOTREPO/prebuilt/system/lib/modules
+cp -R "${j}" $SHOOTREPO/prebuilt/system/lib/modules
 done
 
-if [ -e arch/arm/boot/zImage ]; then
 cd $SHOOTREPO
 git commit -a -m "Automated Kernel Update - ${PROPER}"
 git push git@github.com:$SHOOTGITHUB HEAD:ics -f
@@ -46,28 +50,33 @@ fi
 
 else
 
-rm -fr tmpdir
-mkdir tmpdir
-cp arch/arm/boot/zImage tmpdir/
-for j in $(find . -name "*.ko"); do
-    cp "${j}" tmpdir/
-done
-
-cp -a anykernel.tpl tmpdir/anykernel
-mkdir -p tmpdir/anykernel/kernel
-mkdir -p tmpdir/anykernel/system/lib/modules
-cp tmpdir/zImage tmpdir/anykernel/kernel
-for j in tmpdir/*.ko; do
-    cp "${j}" tmpdir/anykernel/system/lib/modules/
-done
+if [ ! -e zip.aosp/system/lib ]; then
+mkdir zip.aosp/system/lib
+fi
+if [ ! -e zip.aosp/system/lib/modules ]; then
+mkdir zip.aosp/system/lib/modules
+else
+rm -r zip.aosp/system/lib/modules
+mkdir zip.aosp/system/lib/modules
+fi
 
 if [ -e arch/arm/boot/zImage ]; then
+
+for j in $(find . -name "*.ko"); do
+cp -R "${j}" zip.aosp/prebuilt/system/lib/modules
+done
+cp -R arch/arm/boot/zImage mkboot.aosp
+
+cd mkboot.aosp
+echo "making boot image"
+./img.sh
+
 echo "making zip file"
-cd tmpdir/anykernel
+cp -R boot.img ../zip.aosp
+cd ../zip.aosp
+rm *.zip
 zip -r $zipfile *
-cp -R $zipfile $ANDROIDREPO/Kernel/$zipfile
-cd ../../
-rm -fr tmpdir
+cp -R $KERNELSPEC/zip.aosp/$zipfile $ANDROIDREPO/Kernel/$zipfile
 cd $ANDROIDREPO
 git checkout gh-pages
 git commit -a -m "Automated Patch Kernel Build - ${PROPER}"
