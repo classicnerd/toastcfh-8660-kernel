@@ -40,7 +40,7 @@ echo "adding to build"
 
 cp -R arch/arm/boot/zImage $SHOOTREPO/prebuilt/root/kernel
 rm -r $SHOOTREPO/prebuilt/system/lib/modules
-mkdir -r $SHOOTREPO/prebuilt/system/lib/modules
+mkdir $SHOOTREPO/prebuilt/system/lib/modules
 for j in $(find . -name "*.ko"); do
 cp -R "${j}" $SHOOTREPO/prebuilt/system/lib/modules
 done
