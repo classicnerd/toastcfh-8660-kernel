@@ -39,6 +39,8 @@ if [ -e arch/arm/boot/zImage ]; then
 echo "adding to build"
 
 cp -R arch/arm/boot/zImage $SHOOTREPO/prebuilt/root/kernel
+rm -r $SHOOTREPO/prebuilt/system/lib/modules
+mkdir -r $SHOOTREPO/prebuilt/system/lib/modules
 for j in $(find . -name "*.ko"); do
 cp -R "${j}" $SHOOTREPO/prebuilt/system/lib/modules
 done
@@ -63,7 +65,7 @@ fi
 if [ -e arch/arm/boot/zImage ]; then
 
 for j in $(find . -name "*.ko"); do
-cp -R "${j}" zip.aosp/prebuilt/system/lib/modules
+cp -R "${j}" zip.aosp/system/lib/modules
 done
 cp -R arch/arm/boot/zImage mkboot.aosp
 
