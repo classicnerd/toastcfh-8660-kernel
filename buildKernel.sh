@@ -32,15 +32,14 @@ make -j$CPU_JOB_NUM ARCH=arm CROSS_COMPILE=$TOOLCHAIN_PREFIX
 
 find . -name "*.ko" | xargs ${TOOLCHAIN_PREFIX}strip --strip-unneeded
 
-if [ "$2" == "shooter" ]; then
-
 if [ -e arch/arm/boot/zImage ]; then
+
+if [ "$2" == "shooter" ]; then
 
 echo "adding to build"
 
 cp -R arch/arm/boot/zImage $SHOOTREPO/prebuilt/root/kernel
-rm -r $SHOOTREPO/prebuilt/system/lib/modules
-mkdir $SHOOTREPO/prebuilt/system/lib/modules
+rm -r $SHOOTREPO/prebuilt/system/lib/modules/*
 for j in $(find . -name "*.ko"); do
 cp -R "${j}" $SHOOTREPO/prebuilt/system/lib/modules
 done
@@ -48,7 +47,6 @@ done
 cd $SHOOTREPO
 git commit -a -m "Automated Kernel Update - ${PROPER}"
 git push git@github.com:$SHOOTGITHUB HEAD:ics -f
-fi
 
 else
 
@@ -61,8 +59,6 @@ else
 rm -r zip.aosp/system/lib/modules
 mkdir zip.aosp/system/lib/modules
 fi
-
-if [ -e arch/arm/boot/zImage ]; then
 
 for j in $(find . -name "*.ko"); do
 cp -R "${j}" zip.aosp/system/lib/modules
@@ -83,6 +79,7 @@ cd $ANDROIDREPO
 git checkout gh-pages
 git commit -a -m "Automated Patch Kernel Build - ${PROPER}"
 git push git@github.com:$DROIDGITHUB HEAD:ics -f
+
 fi
 
 fi
